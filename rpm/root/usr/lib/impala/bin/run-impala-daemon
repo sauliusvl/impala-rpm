@@ -1,0 +1,48 @@
+#!/bin/bash
+
+export IMPALA_BIN=${IMPALA_BIN:-/usr/lib/impala/sbin}
+export IMPALA_HOME=${IMPALA_HOME:-/usr/lib/impala}
+export HIVE_HOME=${HIVE_HOME:-/usr/lib/hive}
+export HBASE_HOME=${HBASE_HOME:-/usr/lib/hbase}
+export IMPALA_CONF_DIR=${IMPALA_CONF_DIR:-/etc/impala/conf}
+export HADOOP_CONF_DIR=${HADOOP_CONF_DIR:-/etc/impala/conf}
+export HIVE_CONF_DIR=${HIVE_CONF_DIR:-/etc/impala/conf}
+export HBASE_CONF_DIR=${HBASE_CONF_DIR:-/etc/impala/conf}
+export LIBHDFS_OPTS=${LIBHDFS_OPTS:--Djava.library.path=/usr/lib/impala/lib}
+export MYSQL_CONNECTOR_JAR=${MYSQL_CONNECTOR_JAR:-/usr/share/java/mysql-connector-java.jar}
+
+# ensure that java has already been found
+if [ -z "${JAVA_HOME}" ]; then
+  echo "Unable to find Java. JAVA_HOME should be set."
+  exit 1
+fi
+
+# Autodetect location of native java libraries
+for library in libjvm.so libjsig.so libjava.so; do
+    library_file=`find ${JAVA_HOME}/ -name $library | head -1`
+    if [ -n "$library_file" ] ; then
+        library_dir=`dirname $library_file`
+        export LD_LIBRARY_PATH=$library_dir:${LD_LIBRARY_PATH}
+    fi
+done
+export LD_LIBRARY_PATH="${IMPALA_HOME}/lib:${IMPALA_BIN}:${LD_LIBRARY_PATH}"
+
+for jar in "${IMPALA_HOME}"/lib/*.jar; do
+    CLASSPATH="${jar}:${CLASSPATH}"
+done
+export CLASSPATH="${IMPALA_CONF_DIR}:${HADOOP_CONF_DIR}:${HIVE_CONF_DIR}:${HBASE_CONF_DIR}:${CLASSPATH}"
+export CLASSPATH="${MYSQL_CONNECTOR_JAR}:${CLASSPATH}"
+for JAR_FILE in /var/lib/impala/*.jar; do
+    export CLASSPATH="${JAR_FILE}:${CLASSPATH}"
+done
+if [ -n "${AUX_CLASSPATH}" ]; then
+    export CLASSPATH="${AUX_CLASSPATH}:${CLASSPATH}"
+fi
+
+# Add non-standard kinit location to PATH
+if [ -d /usr/kerberos/bin ]; then
+  export PATH=/usr/kerberos/bin:${PATH}
+fi
+
+exec ${IMPALA_BIN}/$1 "$@"
+
