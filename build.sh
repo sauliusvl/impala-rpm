@@ -6,6 +6,7 @@ docker build -t ${BUILDER_IMAGE} buildenv/
 
 rm -rf target/*
 cp -R rpm target/
+find target -name '.gitkeep' -exec rm -rf {} \;
 
 docker run --ulimit nofile=64000 --rm --name impala-rpm-builder -it \
  -v $(pwd)/impala:/impala \
