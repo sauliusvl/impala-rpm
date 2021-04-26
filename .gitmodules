@@ -1,0 +1,4 @@
+[submodule "impala"]
+	path = impala
+	url = https://github.com/apache/impala.git
+	branch = v3.4.0
