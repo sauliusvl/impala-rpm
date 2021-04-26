@@ -15,6 +15,6 @@ cp ${IMPALA}/toolchain/gcc-4.9.2/lib64/libgcc_s.so* ${RPM_ROOT}/usr/lib/impala/l
 cp ${IMPALA}/toolchain/kudu-4ed0dbbd1/release/lib64/libkudu_client.so* ${RPM_ROOT}/usr/lib/impala/lib/
 
 fpm -s dir -t rpm -n impala -v 3.4.0 --iteration 1 \
-  --before-install /impala/tmp/preinstall.sh \
+  --before-install ${TARGET}/rpm/preinstall.sh \
   -C ${RPM_ROOT}/ etc usr var
 
