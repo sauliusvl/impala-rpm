@@ -1,4 +1,3 @@
 #!/bin/sh
 
-exec /usr/lib/impala/bin/run-impala-daemon statestored
-
+exec /usr/lib/impala/bin/run-impala-daemon statestored "$@"

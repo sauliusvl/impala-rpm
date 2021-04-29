@@ -45,4 +45,3 @@ if [ -d /usr/kerberos/bin ]; then
 fi
 
 exec ${IMPALA_BIN}/$1 "$@"
-
