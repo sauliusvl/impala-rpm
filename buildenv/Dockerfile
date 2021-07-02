@@ -18,7 +18,7 @@ RUN yum install -y \
   gcc-4.8.5-44.el7 \
   gcc-c++-4.8.5-44.el7 \
   git-1.8.3.1-23.el7_8 \
-  glibc-devel-2.17-323.el7_9 \
+  glibc-devel-2.17-324.el7_9 \
   java-1.8.0-openjdk-devel-1.8.0.292.b10-1.el7_9 \
   krb5-devel-1.15.1-50.el7 \
   libevent-devel-2.0.21-4.el7 \
