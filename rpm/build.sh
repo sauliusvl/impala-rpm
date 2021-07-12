@@ -53,17 +53,17 @@ separate_debug usr/lib/impala/lib/libkudu_client.so.0.1.0
 separate_debug usr/lib/impala/lib/libstdc++.so.6.0.24
 
 echo 'Packaging Impala RPM ...'
-fpm -s dir -t rpm -n impala -v 4.0.0 --iteration 0.rc7 --rpm-compression xzmt \
+fpm -s dir -t rpm -n impala -v 4.0.0 --iteration 0 --rpm-compression xzmt \
  --before-install /rpm/impala/preinstall.sh \
  -p /target/ \
  -C ${IMPALA_RPM_ROOT}/ etc usr var
 
 echo 'Packaging Impala debug RPM ...'
-fpm -s dir -t rpm -n impala-debug -v 4.0.0 --iteration 0.rc7 --rpm-compression xzmt \
+fpm -s dir -t rpm -n impala-debug -v 4.0.0 --iteration 0 --rpm-compression xzmt \
  -p /target/ \
  -C ${IMPALA_DEBUG_RPM_ROOT}/ usr
 
 echo 'Packaging Impala Shell RPM ...'
-fpm -s dir -t rpm -n impala-shell -v 4.0.0 --iteration 0.rc7 --rpm-compression xzmt \
+fpm -s dir -t rpm -n impala-shell -v 4.0.0 --iteration 0 --rpm-compression xzmt \
  -p /target/ \
  -C ${IMPALA_SHELL_RPM_ROOT}/ usr
