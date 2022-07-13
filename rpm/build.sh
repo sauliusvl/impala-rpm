@@ -1,5 +1,11 @@
 #!/bin/bash
 
+source /etc/profile.d/enableruby27.sh
+
+set -euo pipefail
+
+export VERSION=4.1.0
+
 export IMPALA=/impala
 
 export IMPALA_RPM_ROOT=/target/impala/root
@@ -34,16 +40,16 @@ prepare_rpm_dir impala-shell
 
 cp -a ${IMPALA}/be/build/release/service/{catalogd,statestored,impalad} ${IMPALA_RPM_ROOT}/usr/lib/impala/sbin/
 cp -a ${IMPALA}/fe/target/dependency/*.jar ${IMPALA_RPM_ROOT}/usr/lib/impala/lib/
-cp -a ${IMPALA}/fe/target/impala-frontend-4.0.0-SNAPSHOT.jar ${IMPALA_RPM_ROOT}/usr/lib/impala/lib/
+cp -a ${IMPALA}/fe/target/impala-frontend-${VERSION}-SNAPSHOT.jar ${IMPALA_RPM_ROOT}/usr/lib/impala/lib/
 
 cp -a ${IMPALA}/toolchain/toolchain-packages-gcc7.5.0/gcc-7.5.0/lib64/libstdc++.so* ${IMPALA_RPM_ROOT}/usr/lib/impala/lib/
 cp -a ${IMPALA}/toolchain/toolchain-packages-gcc7.5.0/gcc-7.5.0/lib64/libgcc_s.so* ${IMPALA_RPM_ROOT}/usr/lib/impala/lib/
-cp -a ${IMPALA}/toolchain/toolchain-packages-gcc7.5.0/kudu-b5e7362e69/release/lib64/libkudu_client.so* ${IMPALA_RPM_ROOT}/usr/lib/impala/lib/
+cp -a ${IMPALA}/toolchain/toolchain-packages-gcc7.5.0/kudu-1.16.0/release/lib64/libkudu_client.so* ${IMPALA_RPM_ROOT}/usr/lib/impala/lib/
 
 cp -R ${IMPALA}/www/* ${IMPALA_RPM_ROOT}/usr/lib/impala/www/
 
-cp -R ${IMPALA}/shell/build/impala-shell-4.0.0-RELEASE/{ext-py,gen-py,lib,impala_shell.py,compatibility.py} ${IMPALA_SHELL_RPM_ROOT}/usr/lib/impala-shell/
-cp -R ${IMPALA}/shell/build/impala-shell-4.0.0-RELEASE/impala-shell ${IMPALA_SHELL_RPM_ROOT}/usr/bin/
+cp -R ${IMPALA}/shell/build/impala-shell-${VERSION}-RELEASE/{ext-py,gen-py,lib,impala_shell.py,compatibility.py} ${IMPALA_SHELL_RPM_ROOT}/usr/lib/impala-shell/
+cp -R ${IMPALA}/shell/build/impala-shell-${VERSION}-RELEASE/impala-shell ${IMPALA_SHELL_RPM_ROOT}/usr/bin/
 sed -i 's|^SCRIPT_DIR.*$|SCRIPT_DIR=/usr/lib/impala-shell|g' ${IMPALA_SHELL_RPM_ROOT}/usr/bin/impala-shell
 
 echo 'Separating debug information ...'
@@ -53,17 +59,17 @@ separate_debug usr/lib/impala/lib/libkudu_client.so.0.1.0
 separate_debug usr/lib/impala/lib/libstdc++.so.6.0.24
 
 echo 'Packaging Impala RPM ...'
-fpm -s dir -t rpm -n impala -v 4.0.0 --iteration 0 --rpm-compression xzmt \
+fpm -s dir -t rpm -n impala -v ${VERSION} --iteration 0 --rpm-compression xzmt \
  --before-install /rpm/impala/preinstall.sh \
  -p /target/ \
  -C ${IMPALA_RPM_ROOT}/ etc usr var
 
 echo 'Packaging Impala debug RPM ...'
-fpm -s dir -t rpm -n impala-debug -v 4.0.0 --iteration 0 --rpm-compression xzmt \
+fpm -s dir -t rpm -n impala-debug -v ${VERSION} --iteration 0 --rpm-compression xzmt \
  -p /target/ \
  -C ${IMPALA_DEBUG_RPM_ROOT}/ usr
 
 echo 'Packaging Impala Shell RPM ...'
-fpm -s dir -t rpm -n impala-shell -v 4.0.0 --iteration 0 --rpm-compression xzmt \
+fpm -s dir -t rpm -n impala-shell -v ${VERSION} --iteration 0 --rpm-compression xzmt \
  -p /target/ \
  -C ${IMPALA_SHELL_RPM_ROOT}/ usr

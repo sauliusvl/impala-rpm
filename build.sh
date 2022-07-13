@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 BUILDER_IMAGE=impala-builder:$(git rev-parse --short HEAD)
 
 docker build -t ${BUILDER_IMAGE} buildenv/
